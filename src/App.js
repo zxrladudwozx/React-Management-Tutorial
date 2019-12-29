@@ -3,7 +3,7 @@ import './App.css';
 
 import Customer from'./components/Customer'
 
-const customer ={
+const customer ={//내용을 저장
   'name':'김영재',
   'birthday':'970513',
   'gender':'남자',
