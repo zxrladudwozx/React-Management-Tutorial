@@ -22,32 +22,26 @@ const styles = theme =>({
   }
 })
 
-const customers =[{
-  'id':1,
-  'image':'http://placeimg.com/64/64/1',
-  'name':'김영재',
-  'birthday':'970513',
-  'gender':'남자',
-  'job':'대학생'
-},{
-  'id':2,
-  'image':'http://placeimg.com/64/64/2',
-  'name':'홍길동',
-  'birthday':'1234',
-  'gender':'남자',
-  'job':'직장인'
-},{
-  'id':3,
-  'image':'http://placeimg.com/64/64/3',
-  'name':'긱긱기',
-  'birthday':'4212',
-  'gender':'여자',
-  'job':'디자이너'
-}]
-
 class App extends Component{
+
+  state={ //state는 컴포넌트 안에서 변경될 수 있는 데이터를 사용할 때 사용.
+    customers:""
+  }
+
+  componentDidMount(){  //api서버에 접근
+    this.callApi()
+    .then(res=>this.setState({customers:res}))
+    .catch(err=>console.log(err));
+  }
+
+  callApi=async()=>{
+    const response = await fetch('/api/customers');
+    const body= await response.json();
+    return body;
+  }
+
   render(){
-    const {classes} = this.props;
+    const {classes} = this.props; //props는 변경될 수 없는 데이터를 사용할 때 사용.
     return(
       <Paper className={classes.root}>
         <Table className={classes.table}>
@@ -63,7 +57,7 @@ class App extends Component{
           </TableHead>
           <TableBody>
           {
-            customers.map(c=>{
+            this.state.customers ? this.state.customers.map(c=>{   //map = 각 원소에 어떤 요소를 적용하고 싶을 때 사용 c로 순회.
               return(
                 <Customer
                   key={c.id}  //map을 쓸 땐 key를 지정해줘야함.
@@ -75,8 +69,8 @@ class App extends Component{
                   job={c.job}
                 />
               )
-            }) //map = 각 원소에 어떤 요소를 적용하고 싶을 때 사용 c로 순회.
-          }
+            })//비동기적 방식의 단점. 맨 처음에는 값이 없다고 나오니 그 값이 없다면 공백값을 넣어줌.
+          :""} 
           </TableBody>
         </Table>
       </Paper>
